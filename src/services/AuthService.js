@@ -65,8 +65,8 @@ class AuthService {
    * @returns {object} { accessToken, refreshToken, user }
    */
   async login(email, password) {
-    // Find user with password_hash scope
-    const user = await User.scope('withPassword').findOne({
+    // Find user (unscoped to include password_hash)
+    const user = await User.unscoped().findOne({
       where: { email, is_active: true },
       include: [{ model: Role, as: 'roles', attributes: ['name'] }],
     });

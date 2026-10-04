@@ -109,7 +109,7 @@ BEGIN
         uuid_generate_v4(),
         'System Administrator',
         'admin@grantportal.com',
-        '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LfVhtjFQA3WMKxWMy',
+        '$2a$12$nKpbywbjPRVgznR8b03vSux7H5coRMNRDgq5shqx/x3E5lHggyLAK',
         TRUE
     )
     ON CONFLICT (email) DO NOTHING;

@@ -14,6 +14,7 @@ jest.mock('../../src/models', () => ({
     create: jest.fn(),
     hashPassword: jest.fn().mockResolvedValue('$hashed$password'),
     scope: jest.fn().mockReturnThis(),
+    unscoped: jest.fn().mockReturnThis(),
   },
   Role: {
     findOne: jest.fn(),
@@ -90,7 +91,7 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should throw 401 if user not found', async () => {
-      User.scope = jest.fn().mockReturnValue({
+      User.unscoped = jest.fn().mockReturnValue({
         findOne: jest.fn().mockResolvedValue(null),
       });
 
@@ -105,7 +106,7 @@ describe('AuthService', () => {
         verifyPassword: jest.fn().mockResolvedValue(false),
       });
 
-      User.scope = jest.fn().mockReturnValue({
+      User.unscoped = jest.fn().mockReturnValue({
         findOne: jest.fn().mockResolvedValue(mockUser),
       });
 
@@ -120,7 +121,7 @@ describe('AuthService', () => {
         verifyPassword: jest.fn().mockResolvedValue(true),
       });
 
-      User.scope = jest.fn().mockReturnValue({
+      User.unscoped = jest.fn().mockReturnValue({
         findOne: jest.fn().mockResolvedValue(mockUser),
       });
 

@@ -50,22 +50,23 @@ const bcrypt = require('bcryptjs');
 jest.mock('../../src/models', () => {
   const { v4: uuidv4 } = require('uuid');
 
+  const findOneUserHandler = jest.fn(async ({ where }) => {
+    for (const user of mockDb.users.values()) {
+      if (user.email === where.email) {
+        const userRoles = mockDb.userRoles.get(user.id) || [];
+        return {
+          ...user,
+          roles: userRoles.map((rId) => Array.from(mockDb.roles.values()).find((r) => r.id === rId)),
+          verifyPassword: async (pwd) => require('bcryptjs').compare(pwd, user.password_hash),
+        };
+      }
+    }
+    return null;
+  });
+
   const User = {
-    scope: jest.fn().mockReturnValue({
-      findOne: jest.fn(async ({ where }) => {
-        for (const user of mockDb.users.values()) {
-          if (user.email === where.email) {
-            const userRoles = mockDb.userRoles.get(user.id) || [];
-            return {
-              ...user,
-              roles: userRoles.map((rId) => Array.from(mockDb.roles.values()).find((r) => r.id === rId)),
-              verifyPassword: async (pwd) => require('bcryptjs').compare(pwd, user.password_hash),
-            };
-          }
-        }
-        return null;
-      }),
-    }),
+    unscoped: jest.fn().mockReturnValue({ findOne: findOneUserHandler }),
+    scope: jest.fn().mockReturnValue({ findOne: findOneUserHandler }),
     findOne: jest.fn(async ({ where }) => {
       for (const user of mockDb.users.values()) {
         if (where.email && user.email === where.email) return user;

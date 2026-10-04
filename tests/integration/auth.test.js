@@ -116,7 +116,7 @@ describe('Auth API Endpoints', () => {
         roles: [{ name: 'GRANTEE' }],
         verifyPassword: jest.fn().mockResolvedValue(true),
       });
-      User.scope = jest.fn().mockReturnValue({ findOne: jest.fn().mockResolvedValue(mockUser) });
+      User.unscoped = jest.fn().mockReturnValue({ findOne: jest.fn().mockResolvedValue(mockUser) });
 
       const res = await request(app)
         .post('/api/auth/login')
@@ -129,7 +129,7 @@ describe('Auth API Endpoints', () => {
     });
 
     it('should return 401 for invalid credentials', async () => {
-      User.scope = jest.fn().mockReturnValue({ findOne: jest.fn().mockResolvedValue(null) });
+      User.unscoped = jest.fn().mockReturnValue({ findOne: jest.fn().mockResolvedValue(null) });
 
       const res = await request(app)
         .post('/api/auth/login')
